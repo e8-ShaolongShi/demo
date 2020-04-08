@@ -1,0 +1,17 @@
+
+spring:
+  profiles:
+    active: dev
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        new_generator_mappings: false
+        format_sql: true
+  datasource:
+    url: jdbc:mysql:///test?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+server:
+  port: 8085
