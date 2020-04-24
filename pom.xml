@@ -17,6 +17,7 @@
     <modules>
         <module>menu</module>
         <module>hibernate-demo</module>
+        <module>java8-time</module>
     </modules>
 
     <packaging>pom</packaging>
