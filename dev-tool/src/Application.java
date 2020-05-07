@@ -1,4 +1,3 @@
-import com.sun.xml.internal.ws.util.StringUtils;
 import service.ToolService;
 
 import javax.swing.*;
@@ -25,25 +24,23 @@ public class Application {
                 // 检验文本编辑器中是否有内容
                 String srcStr = sql_content_jep.getText();
                 if (Objects.isNull(srcStr) || "".equals(srcStr)){
-                    JOptionPane.showMessageDialog(null, "请输入需要转化的语句");
+                    JOptionPane.showMessageDialog(null, "请输入需要转换的语句");
+                    return;
                 }
                 // 校验是否 勾选了
                 boolean sql2sbSelected = sql2sb_radio.isSelected();
                 boolean sb2sqlSelected = sb2sql_radio.isSelected();
-                if (!sql2sbSelected && !sb2sqlSelected) {
-                    JOptionPane.showMessageDialog(null, "请勾选转换方式");
-                    return;
-                }
                 String srcSql = sql_content_jep.getText();
-                System.out.println("srcSql:" + srcSql);
                 String sbSql;
                 if (sql2sbSelected) { // SQL 转成sb 包裹的形式
                     sbSql = service.sql2sbConvert(srcSql);
-                } else { // sb形式 转SQL
+                } else if (sb2sqlSelected){ // sb形式 转SQL
                     sbSql = service.sb2sqlConvert(srcSql);
+                }else {
+                    JOptionPane.showMessageDialog(null, "不支持的转换方式");
+                    return;
                 }
                 result_content_jep.setText(sbSql);
-                System.out.println("convertSql:" + sbSql);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "系统错误");

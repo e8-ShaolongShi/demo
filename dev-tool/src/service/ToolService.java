@@ -56,9 +56,11 @@ public class ToolService {
                     .filter(line -> line.contains("append")) // 必须含有append语句
                     .map(line -> {
                         // 去掉首部的 append("
-                        int spaceIndex = line.indexOf("sb.append(\" ");
-                        int noSpaceIndex = line.indexOf("sb.append(\"");
-                        int startIndex = (spaceIndex != -1 ? spaceIndex : noSpaceIndex);
+                        String spaceStr = "append(\" ";
+                        String noSpaceStr = "append(\"";
+                        int spaceIndex = line.indexOf(spaceStr);
+                        int noSpaceIndex = line.indexOf(noSpaceStr);
+                        int startIndex = (spaceIndex != -1 ? spaceIndex + spaceStr.length() : noSpaceIndex + noSpaceStr.length());
                         // 去掉结尾的 "); 及空格
                         int lastIndex = line.lastIndexOf("\");");
                         String sqlLine = line.substring(startIndex, lastIndex);

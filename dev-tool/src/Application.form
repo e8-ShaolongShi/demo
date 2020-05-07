@@ -84,4 +84,10 @@
       </splitpane>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="convert_mode">
+      <member id="328e3"/>
+      <member id="fe7e2"/>
+    </group>
+  </buttonGroups>
 </form>
