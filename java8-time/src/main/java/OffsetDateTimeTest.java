@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.time.*;
 
 /**
@@ -35,14 +36,17 @@ public class OffsetDateTimeTest {
         System.out.println("utc: " + utc);
         ZoneId zoneId = ZoneOffset.systemDefault();
         System.out.println("zoneId: " + zoneId);
-//        ZoneOffset zoneOffset = ZoneOffset.of(ZoneId.);
-//        System.out.println(zoneOffset);
+        ZoneOffset zoneOffset = ZoneOffset.of("+1");
+        System.out.println(zoneOffset);
+
         System.out.println("UTC-id: " + utc.getId());
     }
 
     public static void main(String[] args) {
 //        t1();
 //        t2();
-        t3();
+//        t3();
+        BigDecimal bigDecimal = new BigDecimal(".23");
+        System.out.println(bigDecimal);
     }
 }
