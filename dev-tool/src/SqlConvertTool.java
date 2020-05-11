@@ -1,14 +1,13 @@
 import service.ToolService;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.util.Objects;
 
 /**
  * @author shishaolong
  * @datatime 2020/4/30 16:53
  */
-public class Application {
+public class SqlConvertTool {
     private JPanel panel1;
     private JEditorPane result_content_jep;
     private JButton convert_btn;
@@ -17,13 +16,20 @@ public class Application {
     private JRadioButton sb2sql_radio;
     private ToolService service = new ToolService();
 
-    public Application() {
+    public SqlConvertTool() {
+        uiInit();
+        // 打开窗口相关代码
+        frameInit();
+    }
+
+    // 组件初始化及事件监听
+    public void uiInit() {
         // 转化按钮点击
         convert_btn.addActionListener(e -> {
             try {
                 // 检验文本编辑器中是否有内容
                 String srcStr = sql_content_jep.getText();
-                if (Objects.isNull(srcStr) || "".equals(srcStr)){
+                if (Objects.isNull(srcStr) || "".equals(srcStr)) {
                     JOptionPane.showMessageDialog(null, "请输入需要转换的语句");
                     return;
                 }
@@ -34,9 +40,9 @@ public class Application {
                 String sbSql;
                 if (sql2sbSelected) { // SQL 转成sb 包裹的形式
                     sbSql = service.sql2sbConvert(srcSql);
-                } else if (sb2sqlSelected){ // sb形式 转SQL
+                } else if (sb2sqlSelected) { // sb形式 转SQL
                     sbSql = service.sb2sqlConvert(srcSql);
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(null, "不支持的转换方式");
                     return;
                 }
@@ -49,20 +55,10 @@ public class Application {
         });
     }
 
-    // --- 组件处理逻辑 开始 ---
-    public void lockUI(JTextComponent textComponent) {
-        textComponent.setEditable(false);
-    }
-
-    public void unLockUI(JTextComponent textComponent) {
-        textComponent.setEditable(true);
-    }
-
-    // --- 组件处理逻辑 结束 ---
-
-    public static void main(String[] args) {
+    // 页面窗口初始化
+    public void frameInit() {
         JFrame frame = new JFrame("SQL转化");
-        frame.setContentPane(new Application().panel1);
+        frame.setContentPane(panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 窗口设置成最大化
         frame.setSize(800, 1000);
