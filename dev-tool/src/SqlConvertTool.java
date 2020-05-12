@@ -59,7 +59,7 @@ public class SqlConvertTool {
     public void frameInit() {
         JFrame frame = new JFrame("SQL转化");
         frame.setContentPane(panel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE); // 关闭点击时是隐藏，防止子窗口关闭，父窗口也关闭
 //        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 窗口设置成最大化
         frame.setSize(800, 1000);
         frame.pack();

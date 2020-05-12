@@ -11,7 +11,10 @@ public class ToolsApp {
     private static JFrame frame = new JFrame("开发工具集");
 
     public ToolsApp() {
-        sql_convert_btn.addActionListener(e -> new SqlConvertTool());
+        sql_convert_btn.addActionListener(e -> {
+            new SqlConvertTool();
+            return;
+        });
     }
 
     public static void main(String[] args) {
