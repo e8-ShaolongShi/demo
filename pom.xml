@@ -18,7 +18,17 @@
         <module>menu</module>
         <module>hibernate-demo</module>
         <module>java8-time</module>
+        <module>websocket</module>
+        <module>rabbitmq</module>
     </modules>
 
+    <dependencies>
+        <!--lombok 依赖-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
     <packaging>pom</packaging>
 </project>
