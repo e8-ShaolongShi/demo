@@ -20,6 +20,9 @@
         <module>java8-time</module>
         <module>websocket</module>
         <module>rabbitmq</module>
+        <module>design-pattern</module>
+        <module>project-demo</module>
+        <module>netty-demo</module>
     </modules>
 
     <dependencies>
@@ -28,6 +31,20 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <!--junit 测试-->
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!--fast-json-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.51</version>
         </dependency>
     </dependencies>
     <packaging>pom</packaging>
