@@ -23,6 +23,7 @@
         <module>design-pattern</module>
         <module>project-demo</module>
         <module>netty-demo</module>
+        <module>msg-push</module>
     </modules>
 
     <dependencies>
