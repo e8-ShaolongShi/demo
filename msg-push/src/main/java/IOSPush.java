@@ -6,6 +6,8 @@ import com.eatthepath.pushy.apns.util.SimpleApnsPayloadBuilder;
 import com.eatthepath.pushy.apns.util.SimpleApnsPushNotification;
 import com.eatthepath.pushy.apns.util.TokenUtil;
 import com.eatthepath.pushy.apns.util.concurrent.PushNotificationFuture;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -13,8 +15,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author shishaolong
@@ -22,37 +26,57 @@ import java.util.concurrent.Semaphore;
  */
 @Slf4j
 public class IOSPush {
-    //    private static final Logger logger = LoggerFactory.getLogger(IOSPush.class);
     private static ApnsClient apnsClient = null;
     private static final Semaphore semaphore = new Semaphore(10000);
 
     public void push(final List<String> deviceTokens, String alertTitle, String alertBody) throws IOException {
-        for (String deviceToken : deviceTokens) {
-            // 设置证书
-            final ApnsClient apnsClient = new ApnsClientBuilder()
-                    .setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
-                    .setClientCredentials(new File("D:\\work\\certificate\\yh-app.p12"), "")
-                    .build();
 
+        // 初始化APNs client
+        if (apnsClient == null) {
+            try {
+                EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
+                apnsClient = new ApnsClientBuilder()
+                        .setApnsServer(ApnsClientBuilder.DEVELOPMENT_APNS_HOST)
+                        // 设置证书
+                        .setClientCredentials(new File("D:\\work\\certificate\\yh-app.p12"), "")
+                        .setConcurrentConnections(4).setEventLoopGroup(eventLoopGroup)
+                        .build();
+
+            } catch (Exception e) {
+                log.error("ios get pushy APNs client failed!");
+                e.printStackTrace();
+            }
+        }
+
+        // 遍历每一个deviceToken 发送
+        for (String deviceToken : deviceTokens) {
             // 构建推送消息体
             final SimpleApnsPushNotification pushNotification;
             {
                 final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
                 payloadBuilder.setAlertBody(alertBody);
+                payloadBuilder.setAlertTitle(alertTitle);
 
                 final String payload = payloadBuilder.build();
                 final String token = TokenUtil.sanitizeTokenString(deviceToken);
-
+                // 第一个参数： deviceToken， 第二个参数： buildId， 第三个参数： 发送的内容
                 pushNotification = new SimpleApnsPushNotification(token, "com.Yinfanwan.staff", payload);
             }
 
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException e) {
+                log.debug("ios push semaphore.acquire() is error");
+                e.printStackTrace();
+            }
+
             // 发送
-            final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>>
-                    sendNotificationFuture = apnsClient.sendNotification(pushNotification);
+            final PushNotificationFuture<SimpleApnsPushNotification, PushNotificationResponse<SimpleApnsPushNotification>> sendFuture = apnsClient.sendNotification(pushNotification);
+
             // 各种异常处理
             try {
                 final PushNotificationResponse<SimpleApnsPushNotification> pushNotificationResponse =
-                        sendNotificationFuture.get();
+                        sendFuture.get();
                 // APNs接受了推送的消息
                 if (pushNotificationResponse.isAccepted()) {
                     System.out.println("Push notification accepted by APNs gateway.");
@@ -73,29 +97,30 @@ public class IOSPush {
             }
 
             // 推送完成后需要执行的操作
-            sendNotificationFuture.whenComplete((response, cause) -> {
+            sendFuture.whenComplete((response, cause) -> {
                 if (response != null) {
-                    // Handle the push notification response as before from here.
                     log.info("Send Completed and Response: {}", response);
                 } else {
-                    // Something went wrong when trying to send the notification to the
-                    // APNs server. Note that this is distinct from a rejection from
-                    // the server, and indicates that something went wrong when actually
-                    // sending the notification or waiting for a reply.
                     cause.printStackTrace();
                 }
+                semaphore.release();
             });
-
-            // 关闭资源 最好只是在程序关闭时再关闭资源
-            final CompletableFuture<Void> closeFuture = apnsClient.close();
         }
+
+//             关闭资源 最好只是在程序关闭时再关闭资源
+        final CompletableFuture<Void> closeFuture = apnsClient.close();
     }
+
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
         IOSPush iosPush = new IOSPush();
         List<String> deviceTokenList = new ArrayList();
-        deviceTokenList.add("<8dcadc64 8d802c83 368ec91e 7aeab46e a5085c4d 298e0464 5279712a 9cd0264b>");
+//        String deviceToken = "<8dcadc64 8d802c83 368ec91e 7aeab46e a5085c4d 298e0464 5279712a 9cd0264b>";
+        String deviceToken = "<8dcadc64 8d802c83 368ec91e 7aeab46e a5085c4d 298e0464 5279712a 9cd0264b   52>  ";
+        deviceTokenList.add(deviceToken);
+        deviceTokenList.add(deviceToken);
         iosPush.push(deviceTokenList, "测试", "这是内容");
-        Thread.sleep(4000);
+//        Thread.sleep(4000);
     }
 }
