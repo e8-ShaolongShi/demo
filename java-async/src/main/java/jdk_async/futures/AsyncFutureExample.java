@@ -1,0 +1,70 @@
+package jdk_async.futures;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+/**
+ * @author shishaolong
+ * @datatime 2020/8/24 9:19
+ */
+public class AsyncFutureExample {
+
+    /**
+     * 任务A等待2秒
+     *
+     * @return
+     */
+    public static String doSomethingA() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("----- doSomethingA -----");
+        return "TaskAReset";
+    }
+
+    /**
+     * 任务B 等待2秒
+     *
+     * @return
+     */
+    public static String doSomethingB() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("------------ doSomethingB ------------");
+        return "TaskBResult";
+    }
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        long start = System.currentTimeMillis();
+
+        //1.创建future任务
+        FutureTask<String> futureTask = new FutureTask<String>(() -> {
+            String result = null;
+            try {
+                result = doSomethingA();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        });
+
+        //2.开启异步单元执行任务A
+        Thread thread = new Thread(futureTask, "threadA");
+        thread.start();
+
+        //3.执行任务B
+        String taskBResult = doSomethingB();
+
+        //4.同步等待线程A运行结束
+        String taskAResult = futureTask.get();
+
+        // 5.打印两个任务执行结果
+        System.out.println(taskAResult + " " + taskBResult);
+        System.out.println(System.currentTimeMillis() - start);
+    }
+}

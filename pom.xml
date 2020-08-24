@@ -24,6 +24,7 @@
         <module>project-demo</module>
         <module>netty-demo</module>
         <module>msg-push</module>
+        <module>java-async</module>
     </modules>
 
     <dependencies>
