@@ -12,7 +12,7 @@ import java.util.concurrent.*;
  * @author shishaolong
  * @datatime 2020/8/25 10:13
  */
-public class CompletableDemo {
+public class CompletableFutureDemo {
 
     /* =================== 01.创建型的，类似于流中的stream(),Steam.of()等方法 ===================== */
 
