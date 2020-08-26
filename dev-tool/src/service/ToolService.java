@@ -27,7 +27,7 @@ public class ToolService {
             Integer maxLength = Stream.of(lines).map(line -> line.length()).max(Integer::compareTo).orElse(0);
             String lenSpace = lenSpace(maxLength);
             // 构造每一行的内容
-            String sbLine = Stream.of(lines)
+            String sbLine = Stream.of(lines).filter(line -> line != null && line.length() > 0)
                     .map(line -> {
                         // 格式化sb.append(" ** ")包裹的形式 用空格填充，让每一行都和最长行，长度一致,
                         StringBuffer lineTempSb = new StringBuffer();
