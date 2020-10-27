@@ -8,7 +8,7 @@ import java.util.stream.Stream;
  * @author shishaolong
  * @datatime 2020/5/6 11:23
  */
-public class ToolService {
+public class SqlConvertToolService {
 
     /**
      * 将普通SQL转成 StringBuffer包裹的SQL

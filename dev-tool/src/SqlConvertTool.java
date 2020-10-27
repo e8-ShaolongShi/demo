@@ -1,4 +1,4 @@
-import service.ToolService;
+import service.SqlConvertToolService;
 
 import javax.swing.*;
 import java.util.Objects;
@@ -14,7 +14,7 @@ public class SqlConvertTool {
     private JEditorPane sql_content_jep;
     private JRadioButton sql2sb_radio;
     private JRadioButton sb2sql_radio;
-    private ToolService service = new ToolService();
+    private SqlConvertToolService service = new SqlConvertToolService();
 
     public SqlConvertTool() {
         uiInit();
